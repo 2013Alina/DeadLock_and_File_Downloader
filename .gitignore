@@ -2,7 +2,7 @@
 # Compiled class file
 *.class
 
-/downloads
+downloads/*
 
 # Log file
 *.log
