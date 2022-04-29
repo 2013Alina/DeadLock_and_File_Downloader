@@ -29,9 +29,11 @@ public class Downloader {
                         Files.copy(inputStream, Paths.get(newFileName));
                         file = new File(newFileName);
                         if (file.exists()) {
-                            System.out.println("The generated file is called: " + file.getName());
-                            System.out.println("File:" + file.getName() + "Absolute file path: "
-                                    + file.getAbsolutePath() + "File size: " + file.length());
+                            System.out.println("The file has been saved here: ");
+                            System.out.println(file.getParentFile().getAbsolutePath());
+                            System.out.println("Saved file name: ");
+                            System.out.println(file.getName());
+                            System.out.println("File size: " + Files.size(file.toPath()) + " bytes");
                         } else {
                             System.out.println("File " + newFileName + " not found!!!!!");
                         }
