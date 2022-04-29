@@ -18,23 +18,6 @@ public class App {
         Для загрузки файлов использовать класс URL или HTTPClient (начиная с Java 9).
         Запускать потоки через Thread */
 
-//        Scanner scanner = new Scanner(System.in);
-//        FileDownloader[] fileDownloader = new FileDownloader[5];
-//        String input;
-//
-//        for (int i = 0; i < fileDownloader.length; i++) {
-//            System.out.println("Enter name of web site or copy the connection " + (i + 1) + ":");
-//            input = scanner.next();
-//
-//            if (!checkURL(input)) {
-//                System.out.println("Invalid input!");
-//            } else {
-//                fileDownloader[i] = new FileDownloader(input);
-//            }
-//        }
-//        for (FileDownloader thread : fileDownloader) {
-//            thread.start();
-//        }
         Downloader downloader = new Downloader();
         while (true) {
             System.out.println("Enter your URL or q to exit");

@@ -1,36 +1,39 @@
 package org.example;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class Downloader {
-    private final ExecutorService executor = Executors.newFixedThreadPool(5);
 
     public void downloadFile(final String url) {
         Thread thread = new Thread() {
             @Override
             public void run() {
                 try {
+                    File dir = new File("downloads");
+                    if(!dir.exists()){
+                        dir.mkdir();
+                    }
                     InputStream inputStream = new URL(url).openStream();
-                    String fileName = "downloads" + File.separator + getFileName(url);
-                    File file = new File(fileName);
+                    String newFileName = dir.getName() + File.separator + getDownloadedFileName(url);
+                    File file = new File(newFileName);
                     if (file.exists()) {
-                        System.out.println("File " + fileName + " already exists!");
+                        System.out.println("File " + newFileName + " already exists!");
                     } else {
-                        Files.copy(inputStream, Paths.get(fileName));
-                        file = new File(fileName);
+                        Files.copy(inputStream, Paths.get(newFileName));
+                        file = new File(newFileName);
                         if (file.exists()) {
                             System.out.println("The generated file is called: " + file.getName());
                             System.out.println("File:" + file.getName() + "Absolute file path: "
                                     + file.getAbsolutePath() + "File size: " + file.length());
                         } else {
-                            System.out.println("File " + fileName + " not found!!!!!");
+                            System.out.println("File " + newFileName + " not found!!!!!");
                         }
                     }
                 } catch (IOException e) {
@@ -42,8 +45,9 @@ public class Downloader {
         thread.start();
     }
 
-    private String getFileName(String url) {
-        return url.substring(url.lastIndexOf("/", url.length()));
+    @NotNull
+    private String getDownloadedFileName(String url) {
+        return url.substring(url.lastIndexOf("/"));
     }
 
 //    https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4
