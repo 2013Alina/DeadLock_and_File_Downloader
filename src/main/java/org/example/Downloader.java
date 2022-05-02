@@ -11,23 +11,23 @@ import java.nio.file.Paths;
 import java.util.concurrent.Semaphore;
 
 public class Downloader extends Thread {
-    Semaphore semaphore;
+    Semaphore sem;
     String url;
 
     public Downloader(Semaphore semaphore, String url) {
-        this.semaphore = semaphore;
+        this.sem = semaphore;
         this.url = url;
     }
 
     @Override
     public void run() {
         try {
-            semaphore.acquire();
+            sem.acquire();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         downloadFile(url);
-        semaphore.release();
+        sem.release();
     }
 
     private void downloadFile(final String url) {
