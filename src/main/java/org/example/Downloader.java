@@ -23,7 +23,6 @@ public class Downloader extends Thread {
     public void run() {
         try {
             semaphore.acquire();
-            sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
