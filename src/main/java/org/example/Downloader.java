@@ -8,43 +8,56 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.concurrent.Semaphore;
 
-public class Downloader {
+public class Downloader extends Thread {
+    Semaphore semaphore;
+    String url;
 
-    public void downloadFile(final String url) {
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    File dir = new File("downloads");
-                    if(!dir.exists()){
-                        dir.mkdir();
-                    }
-                    InputStream inputStream = new URL(url).openStream();
-                    String newFileName = dir.getName() + File.separator + getDownloadedFileName(url);
-                    File file = new File(newFileName);
-                    if (file.exists()) {
-                        System.out.println("File " + newFileName + " already exists!");
-                    } else {
-                        Files.copy(inputStream, Paths.get(newFileName));
-                        file = new File(newFileName);
-                        if (file.exists()) {
-                            System.out.println("The file has been saved here: ");
-                            System.out.println(file.getParentFile().getAbsolutePath());
-                            System.out.println("Saved file name: ");
-                            System.out.println(file.getName());
-                            System.out.println("File size: " + Files.size(file.toPath()) + " bytes");
-                        } else {
-                            System.out.println("File " + newFileName + " not found!!!!!");
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+    public Downloader(Semaphore semaphore, String url) {
+        this.semaphore = semaphore;
+        this.url = url;
+    }
+
+    @Override
+    public void run() {
+        try {
+            semaphore.acquire();
+            sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        downloadFile(url);
+        semaphore.release();
+    }
+
+    private void downloadFile(final String url) {
+        try {
+            File dir = new File("downloads");
+            if (!dir.exists()) {
+                dir.mkdir();
+            }
+            InputStream inputStream = new URL(url).openStream();
+            String newFileName = dir.getName() + File.separator + getDownloadedFileName(url);
+            File file = new File(newFileName);
+            if (file.exists()) {
+                System.out.println("File " + newFileName + " already exists!");
+            } else {
+                Files.copy(inputStream, Paths.get(newFileName));
+                file = new File(newFileName);
+                if (file.exists()) {
+                    System.out.println("The file has been saved here: ");
+                    System.out.println(file.getParentFile().getAbsolutePath());
+                    System.out.println("Saved file name: ");
+                    System.out.println(file.getName());
+                    System.out.println("File size: " + Files.size(file.toPath()) + " bytes");
+                } else {
+                    System.out.println("File " + newFileName + " not found!!!!!");
                 }
             }
-        };
-
-        thread.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @NotNull

@@ -3,13 +3,14 @@ package org.example;
 import org.apache.commons.validator.routines.UrlValidator;
 
 import java.util.Scanner;
+import java.util.concurrent.Semaphore;
 
 /**
  * Hello world!
  */
 public class App {
-    public static void main(String[] args) {
 
+    public static void main(String[] args) {
       /*  Задание 2 (Дополнительное)
 
         Создать программу для загрузки файлов из сети интернет.
@@ -18,7 +19,7 @@ public class App {
         Для загрузки файлов использовать класс URL или HTTPClient (начиная с Java 9).
         Запускать потоки через Thread */
 
-        Downloader downloader = new Downloader();
+        Semaphore semaphore = new Semaphore(5);
         while (true) {
             System.out.println("Enter your URL or q to exit");
             Scanner scanner = new Scanner(System.in);
@@ -31,7 +32,8 @@ public class App {
                     continue;
                 }
                 System.out.println("downloading has started");
-                downloader.downloadFile(input);
+                Downloader downloader = new Downloader(semaphore, input);
+                downloader.start();
             }
         }
     }
